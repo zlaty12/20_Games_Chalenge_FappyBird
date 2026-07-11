@@ -6,7 +6,7 @@ const int ScreenHeight = 900;
 
 const int BirdHight = 70;
 const int BrdWidth = 70;
-bool collision = false;
+bool Collision = true;
 
 const int PipeWidth = 100;
 const int PipeHeight = 500;
@@ -32,6 +32,7 @@ public:
 	
 	Rectangle Pipe1;
 	Rectangle Pipe2;
+	Rectangle PipesMiddle;
 
 	Pipe(Vector2 PositionTop, Vector2 PositionBottom) :
 		PiplePositionTop(PositionTop),
@@ -45,9 +46,11 @@ public:
 
 		Pipe1 = { PiplePositionTop.x, PiplePositionTop.y,PipeWidth, PipeHeight };
 		Pipe2 = { PipePositionBottom.x, PipePositionBottom.y, PipeWidth, PipeHeight };
+		PipesMiddle = { PipePositionBottom.x , PiplePositionTop.y - 200.f, PipeWidth, PipeHeight - 300.f };
 
 		DrawRectangleRec(Pipe1, GREEN);
 		DrawRectangleRec(Pipe2, GREEN);
+		DrawRectangleRec(PipesMiddle, YELLOW);
 		
 	}
 
@@ -58,13 +61,7 @@ public:
 
 	}
 
-	void GameOver()
-	{
 
-		//CheckCollisionRecs()
-		//if(false)
-		//SetTargetFPS(0);
-	}
 };
 
 
@@ -124,15 +121,19 @@ int main()
 
 		Pipes.MovePipes(PipeSpeed);
 
-		if (CheckCollisionRecs(Pipes.Pipe1, PlayerBird.BirdRec) || CheckCollisionRecs(Pipes.Pipe2, PlayerBird.BirdRec))
+		if (CheckCollisionRecs(Pipes.Pipe1, PlayerBird.BirdRec) || CheckCollisionRecs(Pipes.Pipe2, PlayerBird.BirdRec) && Collision == true)
 		{
 
 			std::cout << "Close Window" << std::endl;
 
+			Collision = false;
 			CloseWindow();
 			
-
-			
+		}
+		else if ( CheckCollisionRecs(Pipes.PipesMiddle, PlayerBird.BirdRec) && Collision == true)
+		{
+			Collision = false;
+			std::cout << "1 Point yay!" << std::endl;
 		}
 
 		if (IsKeyPressed(KEY_SPACE)) PlayerBird.Position.y += -50.f;
