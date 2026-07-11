@@ -26,6 +26,65 @@ const float FallingSpeed = 50.f;
 
 Vector2 BirdStartPosition = Vector2(ScreenWidht / 2.f - 500.f, ScreenHeight / 2.f);
 
+
+
+class Bird
+{
+
+public:
+
+	Rectangle BirdRec;
+
+
+public:
+	bool bCanJump;
+	Vector2 Position;
+
+	Bird(Vector2 Position)
+		: Position(Position)
+	{
+
+	}
+
+
+	void DrawBird()
+	{
+		BirdRec = { Position.x, Position.y, BrdWidth, BirdHight };
+
+		DrawRectangleRec(BirdRec, RED);
+	}
+
+
+
+};
+
+
+
+
+void SaveHighScore(int score)
+{
+	SaveFileText("highscore.txt", TextFormat("%d", score));
+}
+
+int HighScore()
+{
+	if (FileExists("highscore.txt") && Loaded == false)
+	{
+		Loaded = true;
+		int Score;
+
+		sscanf_s(LoadFileText("highscore.txt"), "%d", &Score);
+		return Score;
+	}
+	return 0;
+}
+
+
+
+
+
+Bird PlayerBird = Bird(BirdStartPosition);
+
 class Pipe
 {
 private:
@@ -74,59 +133,43 @@ public:
 	}
 
 
+
+	void CheckCollision()
+	{
+		if ((CheckCollisionRecs(Pipe1, PlayerBird.BirdRec) || CheckCollisionRecs(Pipe2, PlayerBird.BirdRec)) && (Collision) == true)
+		{
+
+			std::cout << "Close Window" << std::endl;
+
+			Collision = false;
+			EndDrawing();
+			CloseWindow();
+
+		}
+
+		if (CheckCollisionRecs(PipesMiddle, PlayerBird.BirdRec) && (Collision) == true)
+		{
+			Points += 1;
+			Collision = false;
+
+
+			if (Points > HightScorePoints)
+			{
+				HightScorePoints = Points;
+				SaveHighScore(HightScorePoints);
+			}
+
+
+		}
+		else if (!CheckCollisionRecs(PipesMiddle, PlayerBird.BirdRec) && (Collision) == false)
+		{
+			Collision = true;
+		}
+	}
+
 };
 
 std::vector<Pipe> PipeArray;
-class Bird
-{
-	
-public:
-
-	Rectangle BirdRec;
-	
-
-public:
-	bool bCanJump;
-	Vector2 Position;
-
-	Bird(Vector2 Position)
-		: Position(Position)
-	{
-		
-	}
-
-
-	void DrawBird()
-	{
-		BirdRec = { Position.x, Position.y, BrdWidth, BirdHight };
-
-		DrawRectangleRec(BirdRec, RED);
-	}
-
-
-	
-};
-
-Bird PlayerBird = Bird(BirdStartPosition);
-
-
-void SaveHighScore(int score)
-{
-	SaveFileText("highscore.txt", TextFormat("%d", score));
-}
-
-int HighScore()
-{
-	if (FileExists("highscore.txt") && Loaded == false)
-	{
-		Loaded = true;
-		int Score;
-
-		sscanf_s(LoadFileText("highscore.txt"), "%d", &Score);
-		return Score;
-	}
-	return 0;
-}
 
 void SpawnPipes()
 {
@@ -139,9 +182,9 @@ void SpawnPipes()
 	{
 		timer = 0.f;
 		std::cout << "Spawning" << std::endl;
-		
+
 		PipeArray.push_back(Pipe(PipeStartPosition, PipeStartPositionTop));
-		
+
 	}
 
 
@@ -151,47 +194,12 @@ void SpawnPipes()
 		PipeArray[i].MovePipes(PipeSpeed);
 
 
-		if ((CheckCollisionRecs(PipeArray[i].Pipe1, PlayerBird.BirdRec) || CheckCollisionRecs(PipeArray[i].Pipe2, PlayerBird.BirdRec)) && (PipeArray[i].Collision) == true)
-		{
 
-			std::cout << "Close Window" << std::endl;
-
-			PipeArray[i].Collision = false;
-			CloseWindow();
-
-		}
-
-		if (CheckCollisionRecs(PipeArray[i].PipesMiddle, PlayerBird.BirdRec) && (PipeArray[i].Collision) == true)
-		{
-			Points += 1;
-			PipeArray[i].Collision = false;
-			std::cout << Points << " Point yay!" << std::endl;
-
-			if (Points > HightScorePoints)
-			{
-				HightScorePoints = Points;
-				SaveHighScore(HightScorePoints);
-			}
-
-
-		}
-		else if (!CheckCollisionRecs(PipeArray[i].PipesMiddle, PlayerBird.BirdRec) && (PipeArray[i].Collision) == false)
-		{
-			PipeArray[i].Collision = true;
-			std::cout << "Collision stoped: " << PipeArray[i].Collision << std::endl;
-		}
-
-
-		
 
 	}
 
-	
+
 }
-
-
-
-
 
 int main()
 {
@@ -199,20 +207,11 @@ int main()
 	SetTargetFPS(60);
 
 
-
-	
-
 	HightScorePoints = HighScore();
 
-	std::cout << "High Score is: " << HightScorePoints << std::endl;
 
 	while (!WindowShouldClose())
 	{
-
-		
-		
-
-
 		BeginDrawing();
 
 		SpawnPipes();
@@ -222,12 +221,10 @@ int main()
 		PlayerBird.DrawBird();
 
 		
-
 		if (IsKeyPressed(KEY_SPACE)) 
 			PlayerBird.Position.y += -50.f;
 
 		PlayerBird.Position.y += FallingSpeed * GetFrameTime();
-
 
 
 		if (IsKeyPressed(KEY_P))
