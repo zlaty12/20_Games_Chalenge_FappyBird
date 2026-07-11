@@ -6,7 +6,7 @@ const int ScreenHeight = 900;
 
 const int BirdHight = 70;
 const int BrdWidth = 70;
-
+bool collision = false;
 
 const int PipeWidth = 100;
 const int PipeHeight = 500;
@@ -25,22 +25,30 @@ class Pipe
 private:
 	Vector2 PiplePositionTop;
 	Vector2 PipePositionBottom;
+	
 
 	
 public:
 	
+	Rectangle Pipe1;
+	Rectangle Pipe2;
 
 	Pipe(Vector2 PositionTop, Vector2 PositionBottom) :
 		PiplePositionTop(PositionTop),
 		PipePositionBottom(PositionBottom)
 	{
-
+		
 	}
 
 	void DrawPipe()
 	{
-		DrawRectangle(PiplePositionTop.x, PiplePositionTop.y, PipeWidth, PipeHeight, GREEN);
-		DrawRectangle(PipePositionBottom.x, PipePositionBottom.y, PipeWidth, PipeHeight, GREEN);
+
+		Pipe1 = { PiplePositionTop.x, PiplePositionTop.y,PipeWidth, PipeHeight };
+		Pipe2 = { PipePositionBottom.x, PipePositionBottom.y, PipeWidth, PipeHeight };
+
+		DrawRectangleRec(Pipe1, GREEN);
+		DrawRectangleRec(Pipe2, GREEN);
+		
 	}
 
 	void MovePipes(float PipeSpeed)
@@ -49,13 +57,23 @@ public:
 		PipePositionBottom.x -= PipeSpeed * GetFrameTime();
 
 	}
+
+	void GameOver()
+	{
+
+		//CheckCollisionRecs()
+		//if(false)
+		//SetTargetFPS(0);
+	}
 };
 
 
 class Bird
 {
 	
-	
+public:
+
+	Rectangle BirdRec;
 	
 
 public:
@@ -71,7 +89,9 @@ public:
 
 	void DrawBird()
 	{
-		DrawRectangle(Position.x, Position.y, BrdWidth, BirdHight, RED);
+		BirdRec = { Position.x, Position.y, BrdWidth, BirdHight };
+
+		DrawRectangleRec(BirdRec, RED);
 	}
 
 
@@ -86,11 +106,13 @@ int main()
 
 	Bird PlayerBird = Bird(BirdStartPosition);
 
-	Pipe FirstPipe = Pipe(PipeStartPosition,PipeStartPositionTop);
+	Pipe Pipes = Pipe(PipeStartPosition,PipeStartPositionTop);
 
 	
 	while (!WindowShouldClose())
 	{
+
+		
 
 		BeginDrawing();
 		
@@ -98,9 +120,20 @@ int main()
 
 		PlayerBird.DrawBird();
 
-		FirstPipe.DrawPipe();
+		Pipes.DrawPipe();
 
-		FirstPipe.MovePipes(PipeSpeed);
+		Pipes.MovePipes(PipeSpeed);
+
+		if (CheckCollisionRecs(Pipes.Pipe1, PlayerBird.BirdRec) || CheckCollisionRecs(Pipes.Pipe2, PlayerBird.BirdRec))
+		{
+
+			std::cout << "Close Window" << std::endl;
+
+			CloseWindow();
+			
+
+			
+		}
 
 		if (IsKeyPressed(KEY_SPACE)) PlayerBird.Position.y += -50.f;
 
