@@ -138,6 +138,8 @@ int main()
 
 		
 		
+		
+
 		ClearBackground(RAYWHITE);
 
 		PlayerBird.DrawBird();
@@ -176,11 +178,23 @@ int main()
 			std::cout << "Collision stoped: " << Collision << std::endl;
 		}
 
-		if (IsKeyPressed(KEY_SPACE)) PlayerBird.Position.y += -50.f;
+		if (IsKeyPressed(KEY_SPACE)) 
+			PlayerBird.Position.y += -50.f;
 
 		PlayerBird.Position.y += FallingSpeed * GetFrameTime();
 
-		
+
+
+		if (IsKeyPressed(KEY_P))
+		{
+			HightScorePoints = 0;
+			SaveHighScore(HightScorePoints);
+		}
+
+
+		DrawText(TextFormat("High Score: %d", HightScorePoints), 500, 20, 40, RED);
+		DrawText(TextFormat("Score: %d", Points), 500, 100, 40, BLUE);
+		DrawText(TextFormat("Press P to reset high score"), 800, 20, 40, BLACK);
 
 		EndDrawing();
 	}
