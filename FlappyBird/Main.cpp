@@ -23,7 +23,7 @@ Vector2 BirdStartPosition = Vector2(ScreenWidht / 2.f - 500.f, ScreenHeight / 2.
 class Pipe
 {
 private:
-	Vector2 PiplePositionTop;
+	Vector2 PipePositionTop;
 	Vector2 PipePositionBottom;
 	
 
@@ -35,7 +35,7 @@ public:
 	Rectangle PipesMiddle;
 
 	Pipe(Vector2 PositionTop, Vector2 PositionBottom) :
-		PiplePositionTop(PositionTop),
+		PipePositionTop(PositionTop),
 		PipePositionBottom(PositionBottom)
 	{
 		
@@ -44,9 +44,9 @@ public:
 	void DrawPipe()
 	{
 
-		Pipe1 = { PiplePositionTop.x, PiplePositionTop.y,PipeWidth, PipeHeight };
+		Pipe1 = { PipePositionTop.x, PipePositionTop.y,PipeWidth, PipeHeight };
 		Pipe2 = { PipePositionBottom.x, PipePositionBottom.y, PipeWidth, PipeHeight };
-		PipesMiddle = { PipePositionBottom.x , PiplePositionTop.y - 200.f, PipeWidth, PipeHeight - 300.f };
+		PipesMiddle = { PipePositionBottom.x , PipePositionTop.y - 200.f, PipeWidth, PipeHeight - 300.f };
 
 		DrawRectangleRec(Pipe1, GREEN);
 		DrawRectangleRec(Pipe2, GREEN);
@@ -56,7 +56,7 @@ public:
 
 	void MovePipes(float PipeSpeed)
 	{
-		PiplePositionTop.x -= PipeSpeed * GetFrameTime();
+		PipePositionTop.x -= PipeSpeed * GetFrameTime();
 		PipePositionBottom.x -= PipeSpeed * GetFrameTime();
 
 	}
@@ -130,10 +130,16 @@ int main()
 			CloseWindow();
 			
 		}
-		else if ( CheckCollisionRecs(Pipes.PipesMiddle, PlayerBird.BirdRec) && Collision == true)
+
+		if (CheckCollisionRecs(Pipes.PipesMiddle, PlayerBird.BirdRec) && Collision == true)
 		{
 			Collision = false;
 			std::cout << "1 Point yay!" << std::endl;
+		}
+		else if (!CheckCollisionRecs(Pipes.PipesMiddle, PlayerBird.BirdRec) && Collision == false)
+		{
+			Collision = true;
+			std::cout << "Collision stoped: " << Collision << std::endl;
 		}
 
 		if (IsKeyPressed(KEY_SPACE)) PlayerBird.Position.y += -50.f;
