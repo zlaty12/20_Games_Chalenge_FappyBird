@@ -7,7 +7,10 @@ const int ScreenHeight = 900;
 const int BirdHight = 70;
 const int BrdWidth = 70;
 bool Collision = true;
+bool Loaded = false;
 
+int HightScorePoints;
+int Points;
 const int PipeWidth = 100;
 const int PipeHeight = 500;
 
@@ -95,6 +98,23 @@ public:
 	
 };
 
+int HighScore()
+{
+	if (FileExists("highscore.txt") && Loaded == false)
+	{
+		Loaded = true;
+		int Score;
+		
+		sscanf_s(LoadFileText("highscore.txt"), "%d", &Score);
+		return Score;
+	}
+	return 0;
+}
+
+void SaveHighScore(int score)
+{
+	SaveFileText("highscore.txt", TextFormat("%d", score));
+}
 
 int main()
 {
@@ -105,13 +125,18 @@ int main()
 
 	Pipe Pipes = Pipe(PipeStartPosition,PipeStartPositionTop);
 
-	
+	HightScorePoints = HighScore();
+
+	std::cout << "High Score is: " << HightScorePoints << std::endl;
+
 	while (!WindowShouldClose())
 	{
 
 		
 
 		BeginDrawing();
+
+		
 		
 		ClearBackground(RAYWHITE);
 
@@ -121,7 +146,7 @@ int main()
 
 		Pipes.MovePipes(PipeSpeed);
 
-		if (CheckCollisionRecs(Pipes.Pipe1, PlayerBird.BirdRec) || CheckCollisionRecs(Pipes.Pipe2, PlayerBird.BirdRec) && Collision == true)
+		if ((CheckCollisionRecs(Pipes.Pipe1, PlayerBird.BirdRec) || CheckCollisionRecs(Pipes.Pipe2, PlayerBird.BirdRec)) && Collision == true)
 		{
 
 			std::cout << "Close Window" << std::endl;
@@ -133,8 +158,17 @@ int main()
 
 		if (CheckCollisionRecs(Pipes.PipesMiddle, PlayerBird.BirdRec) && Collision == true)
 		{
+			Points += 1;
 			Collision = false;
-			std::cout << "1 Point yay!" << std::endl;
+			std::cout << Points << " Point yay!" << std::endl;
+
+			if (Points > HightScorePoints)
+			{
+				HightScorePoints = Points;
+				SaveHighScore(HightScorePoints);
+			}
+
+			
 		}
 		else if (!CheckCollisionRecs(Pipes.PipesMiddle, PlayerBird.BirdRec) && Collision == false)
 		{
