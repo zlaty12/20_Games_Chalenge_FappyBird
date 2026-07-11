@@ -192,7 +192,7 @@ void SpawnPipes()
 	{
 		PipeArray[i].DrawPipe();
 		PipeArray[i].MovePipes(PipeSpeed);
-
+		PipeArray[i].CheckCollision();
 
 
 
