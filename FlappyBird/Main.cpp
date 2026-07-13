@@ -12,17 +12,17 @@ bool Loaded = false;
 
 
 float timer;
-const float SpawnTime = 5.f;
+const float SpawnTime = 0.5f;
 int HightScorePoints = 0;
 int Points = 0;
 const int PipeWidth = 100;
-const int PipeHeight = 500;
+const int PipeHeight = 1000;
 
 float PipeSpeed = 100.f;
 
 
-Vector2 PipeStartPosition = Vector2(ScreenWidht - 100.f, ScreenHeight - 200.f);
-Vector2 PipeStartPositionTop = Vector2(ScreenWidht - 100.f, 0.f);
+Vector2 PipeStartPosition = Vector2(ScreenWidht - 100.f, ScreenHeight - 200);
+Vector2 PipeStartPositionTop = Vector2(ScreenWidht - 100.f, ScreenHeight - 900);
 
 const float FallingSpeed = 50.f;
 
@@ -107,9 +107,10 @@ public:
 		PipePositionTop(PositionTop),
 		PipePositionBottom(PositionBottom)
 	{
-		int OfsetY = GetRandomValue(-ScreenHeight / 4, ScreenHeight /4);
+	
+		int OfsetY = GetRandomValue(-450,180);
 		
-		RandomOfsetPipes = std::clamp(OfsetY,margin- ScreenHeight,ScreenHeight - margin);
+		RandomOfsetPipes = std::clamp(OfsetY,-450,180);
 	}
 
 	~Pipe()
@@ -120,11 +121,11 @@ public:
 	void DrawPipe()
 	{
 
-		Pipe1 = { PipePositionTop.x, PipePositionTop.y + RandomOfsetPipes,PipeWidth, PipeHeight };
-		Pipe2 = { PipePositionBottom.x, PipePositionBottom.y + RandomOfsetPipes, PipeWidth, PipeHeight };
-		PipesMiddle = { PipePositionBottom.x , PipePositionTop.y  - 200.f + RandomOfsetPipes, PipeWidth, PipeHeight - 300.f };
+		Pipe1 = { PipePositionTop.x, (PipePositionTop.y ) + RandomOfsetPipes,PipeWidth, PipeHeight };
+		Pipe2 = { PipePositionBottom.x, (PipePositionBottom.y - 500) + RandomOfsetPipes, PipeWidth, PipeHeight };
+		PipesMiddle = { PipePositionBottom.x , PipePositionTop.y  - 200.f + RandomOfsetPipes, PipeWidth, PipeHeight - 800.f };
 
-		DrawRectangleRec(Pipe1, GREEN);
+		DrawRectangleRec(Pipe1, RED);
 		DrawRectangleRec(Pipe2, GREEN);
 		DrawRectangleRec(PipesMiddle, YELLOW);
 		
