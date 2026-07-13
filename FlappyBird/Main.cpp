@@ -1,6 +1,7 @@
 #include <iostream>
 #include <raylib.h>
 #include <vector>
+#include <algorithm>
 
 const int ScreenWidht = 1600;
 const int ScreenHeight = 900;
@@ -18,6 +19,7 @@ const int PipeWidth = 100;
 const int PipeHeight = 500;
 
 float PipeSpeed = 100.f;
+
 
 Vector2 PipeStartPosition = Vector2(ScreenWidht - 100.f, ScreenHeight - 200.f);
 Vector2 PipeStartPositionTop = Vector2(ScreenWidht - 100.f, 0.f);
@@ -90,7 +92,8 @@ class Pipe
 private:
 	Vector2 PipePositionTop;
 	Vector2 PipePositionBottom;
-	
+	float RandomOfsetPipes;
+	int margin = 80;
 	
 	
 public:
@@ -104,7 +107,9 @@ public:
 		PipePositionTop(PositionTop),
 		PipePositionBottom(PositionBottom)
 	{
+		int OfsetY = GetRandomValue(-ScreenHeight / 4, ScreenHeight /4);
 		
+		RandomOfsetPipes = std::clamp(OfsetY,margin- ScreenHeight,ScreenHeight - margin);
 	}
 
 	~Pipe()
@@ -115,9 +120,9 @@ public:
 	void DrawPipe()
 	{
 
-		Pipe1 = { PipePositionTop.x, PipePositionTop.y,PipeWidth, PipeHeight };
-		Pipe2 = { PipePositionBottom.x, PipePositionBottom.y, PipeWidth, PipeHeight };
-		PipesMiddle = { PipePositionBottom.x , PipePositionTop.y - 200.f, PipeWidth, PipeHeight - 300.f };
+		Pipe1 = { PipePositionTop.x, PipePositionTop.y + RandomOfsetPipes,PipeWidth, PipeHeight };
+		Pipe2 = { PipePositionBottom.x, PipePositionBottom.y + RandomOfsetPipes, PipeWidth, PipeHeight };
+		PipesMiddle = { PipePositionBottom.x , PipePositionTop.y  - 200.f + RandomOfsetPipes, PipeWidth, PipeHeight - 300.f };
 
 		DrawRectangleRec(Pipe1, GREEN);
 		DrawRectangleRec(Pipe2, GREEN);
@@ -142,8 +147,12 @@ public:
 			std::cout << "Close Window" << std::endl;
 
 			Collision = false;
+
+			
+
 			EndDrawing();
 			CloseWindow();
+			exit(0);
 
 		}
 
