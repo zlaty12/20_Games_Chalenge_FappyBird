@@ -2,6 +2,8 @@
 #include <raylib.h>
 #include <vector>
 #include <algorithm>
+#include <filesystem>
+
 
 const int ScreenWidht = 1600;
 const int ScreenHeight = 900;
@@ -12,13 +14,17 @@ bool Loaded = false;
 
 
 float timer;
-const float SpawnTime = 0.5f;
+const float SpawnTime = 5.f;
 int HightScorePoints = 0;
 int Points = 0;
 const int PipeWidth = 100;
 const int PipeHeight = 1000;
 
 float PipeSpeed = 100.f;
+
+
+//Sprites
+Texture2D BackGround;
 
 
 Vector2 PipeStartPosition = Vector2(ScreenWidht - 100.f, ScreenHeight - 200);
@@ -125,7 +131,7 @@ public:
 		Pipe2 = { PipePositionBottom.x, (PipePositionBottom.y - 500) + RandomOfsetPipes, PipeWidth, PipeHeight };
 		PipesMiddle = { PipePositionBottom.x , PipePositionTop.y  - 200.f + RandomOfsetPipes, PipeWidth, PipeHeight - 800.f };
 
-		DrawRectangleRec(Pipe1, RED);
+		DrawRectangleRec(Pipe1, GREEN);
 		DrawRectangleRec(Pipe2, GREEN);
 		DrawRectangleRec(PipesMiddle, YELLOW);
 		
@@ -150,7 +156,7 @@ public:
 			Collision = false;
 
 			
-
+			UnloadTexture(BackGround);
 			EndDrawing();
 			CloseWindow();
 			exit(0);
@@ -213,9 +219,16 @@ void SpawnPipes()
 
 int main()
 {
+
+	
+
+	
+
 	InitWindow(ScreenWidht, ScreenHeight, "20 Games Chalenge Flappy Bird");
 	SetTargetFPS(60);
 
+	BackGround = LoadTexture("Sprites/Background/Background5.png");
+	
 
 	HightScorePoints = HighScore();
 
@@ -224,9 +237,15 @@ int main()
 	{
 		BeginDrawing();
 
+		DrawTexturePro(BackGround, {0,0,(float)BackGround.height, (float)BackGround.width},{0,0, ScreenWidht,ScreenHeight}, {0,0}, 0, WHITE);
+
 		SpawnPipes();
 
 		ClearBackground(RAYWHITE);
+
+		
+
+
 
 		PlayerBird.DrawBird();
 
@@ -248,9 +267,11 @@ int main()
 		DrawText(TextFormat("Score: %d", Points), 500, 100, 40, BLUE);
 		DrawText(TextFormat("Press P to reset high score"), 800, 20, 40, BLACK);
 
+		
 		EndDrawing();
 	}
 
+	UnloadTexture(BackGround);
 	CloseWindow();
 
 }
