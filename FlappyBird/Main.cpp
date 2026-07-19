@@ -24,7 +24,7 @@ float PipeSpeed = 100.f;
 
 
 //Sprites
-Texture2D BackGround;
+Texture2D Background;
 
 
 Vector2 PipeStartPosition = Vector2(ScreenWidht - 100.f, ScreenHeight - 200);
@@ -121,7 +121,7 @@ public:
 
 	~Pipe()
 	{
-		std::cout << "Pipe Deleted" << std::endl;
+		
 	}
 
 	void DrawPipe()
@@ -144,7 +144,21 @@ public:
 
 	}
 
+	bool PipleOutOfScreen()
+	{
+		if (PipePositionTop.x < -100.f)
+		{
+			std::cout << "Del Pipe" << std::endl;
 
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
+		
+	}
 
 	void CheckCollision()
 	{
@@ -156,7 +170,7 @@ public:
 			Collision = false;
 
 			
-			UnloadTexture(BackGround);
+			UnloadTexture(Background);
 			EndDrawing();
 			CloseWindow();
 			exit(0);
@@ -191,13 +205,14 @@ void SpawnPipes()
 {
 	timer += GetFrameTime();
 
-	std::cout << timer << std::endl;
+	
 
 
 	if (SpawnTime <= timer)
 	{
 		timer = 0.f;
-		std::cout << "Spawning" << std::endl;
+		
+
 
 		PipeArray.push_back(Pipe(PipeStartPosition, PipeStartPositionTop));
 
@@ -206,13 +221,22 @@ void SpawnPipes()
 
 	for (int i = 0; i < PipeArray.size(); i++)
 	{
+		if (PipeArray[i].PipleOutOfScreen())
+		{
+			PipeArray.erase(PipeArray.begin() + i);
+		}
+
 		PipeArray[i].DrawPipe();
 		PipeArray[i].MovePipes(PipeSpeed);
 		PipeArray[i].CheckCollision();
+		PipeArray[i].PipleOutOfScreen();
+		
 
 
 
 	}
+
+	
 
 
 }
@@ -227,7 +251,7 @@ int main()
 	InitWindow(ScreenWidht, ScreenHeight, "20 Games Chalenge Flappy Bird");
 	SetTargetFPS(60);
 
-	BackGround = LoadTexture("Sprites/Background/Background5.png");
+	Background = LoadTexture("Sprites/Background/Background5.png");
 	
 
 	HightScorePoints = HighScore();
@@ -237,7 +261,7 @@ int main()
 	{
 		BeginDrawing();
 
-		DrawTexturePro(BackGround, {0,0,(float)BackGround.height, (float)BackGround.width},{0,0, ScreenWidht,ScreenHeight}, {0,0}, 0, WHITE);
+		DrawTexturePro(Background, {0,0,(float)Background.width, (float)Background.height},{0,0, ScreenWidht,ScreenHeight}, {0,0}, 0, WHITE);
 
 		SpawnPipes();
 
@@ -271,7 +295,7 @@ int main()
 		EndDrawing();
 	}
 
-	UnloadTexture(BackGround);
+	UnloadTexture(Background);
 	CloseWindow();
 
 }
