@@ -23,8 +23,14 @@ const int PipeHeight = 1000;
 float PipeSpeed = 100.f;
 
 
+
+
 //Sprites
+//Background
 Texture2D Background;
+float BackgroundOffset = 0.f;
+const float BackgroundSpeed = 50.f;
+
 
 
 Vector2 PipeStartPosition = Vector2(ScreenWidht - 100.f, ScreenHeight - 200);
@@ -35,7 +41,7 @@ const float FallingSpeed = 50.f;
 Vector2 BirdStartPosition = Vector2(ScreenWidht / 2.f - 500.f, ScreenHeight / 2.f);
 
 
-
+// bird class
 class Bird
 {
 
@@ -92,7 +98,7 @@ int HighScore()
 
 
 Bird PlayerBird = Bird(BirdStartPosition);
-
+// pipe class
 class Pipe
 {
 private:
@@ -124,6 +130,7 @@ public:
 		
 	}
 
+	// Draws pipes
 	void DrawPipe()
 	{
 
@@ -144,7 +151,7 @@ public:
 
 	}
 
-	bool PipleOutOfScreen()
+	bool PipeOutOffScreen()
 	{
 		if (PipePositionTop.x < -100.f)
 		{
@@ -221,7 +228,7 @@ void SpawnPipes()
 
 	for (int i = 0; i < PipeArray.size(); i++)
 	{
-		if (PipeArray[i].PipleOutOfScreen())
+		if (PipeArray[i].PipeOutOffScreen())
 		{
 			PipeArray.erase(PipeArray.begin() + i);
 		}
@@ -229,9 +236,6 @@ void SpawnPipes()
 		PipeArray[i].DrawPipe();
 		PipeArray[i].MovePipes(PipeSpeed);
 		PipeArray[i].CheckCollision();
-		PipeArray[i].PipleOutOfScreen();
-		
-
 
 
 	}
@@ -248,7 +252,7 @@ int main()
 
 	
 
-	InitWindow(ScreenWidht, ScreenHeight, "20 Games Chalenge Flappy Bird");
+	InitWindow(ScreenWidht, ScreenHeight, "20 Games challenge Flappy Bird");
 	SetTargetFPS(60);
 
 	Background = LoadTexture("Sprites/Background/Background5.png");
@@ -261,7 +265,24 @@ int main()
 	{
 		BeginDrawing();
 
-		DrawTexturePro(Background, {0,0,(float)Background.width, (float)Background.height},{0,0, ScreenWidht,ScreenHeight}, {0,0}, 0, WHITE);
+		BackgroundOffset -= BackgroundSpeed * GetFrameTime();
+
+		
+		if (BackgroundOffset <= -ScreenWidht)
+		{
+			BackgroundOffset = 0.f;
+		}
+
+		
+		DrawTexturePro(Background,
+			{ 0, 0, (float)Background.width, (float)Background.height },
+			{ BackgroundOffset, 0, (float)ScreenWidht, (float)ScreenHeight },
+			{ 0, 0 }, 0, WHITE);
+
+		DrawTexturePro(Background,
+			{ 0, 0, (float)Background.width, (float)Background.height },
+			{ BackgroundOffset + ScreenWidht, 0, (float)ScreenWidht, (float)ScreenHeight },
+			{ 0, 0 }, 0, WHITE);
 
 		SpawnPipes();
 
