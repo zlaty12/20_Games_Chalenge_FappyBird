@@ -5,7 +5,7 @@
 #include <filesystem>
 
 
-const int ScreenWidht = 1600;
+const int ScreenWidth = 1600;
 const int ScreenHeight = 900;
 
 const int BirdHight = 70;
@@ -33,12 +33,12 @@ const float BackgroundSpeed = 50.f;
 
 
 
-Vector2 PipeStartPosition = Vector2(ScreenWidht - 100.f, ScreenHeight - 200);
-Vector2 PipeStartPositionTop = Vector2(ScreenWidht - 100.f, ScreenHeight - 900);
+Vector2 PipeStartPosition = Vector2(ScreenWidth - 100.f, ScreenHeight - 200);
+Vector2 PipeStartPositionTop = Vector2(ScreenWidth - 100.f, ScreenHeight - 900);
 
 const float FallingSpeed = 50.f;
 
-Vector2 BirdStartPosition = Vector2(ScreenWidht / 2.f - 500.f, ScreenHeight / 2.f);
+Vector2 BirdStartPosition = Vector2(ScreenWidth / 2.f - 500.f, ScreenHeight / 2.f);
 
 
 // bird class
@@ -252,23 +252,24 @@ int main()
 
 	
 
-	InitWindow(ScreenWidht, ScreenHeight, "20 Games challenge Flappy Bird");
+	InitWindow(ScreenWidth, ScreenHeight, "20 Games challenge Flappy Bird");
 	SetTargetFPS(60);
 
 	Background = LoadTexture("Sprites/Background/Background5.png");
 	
-
+	
 	HightScorePoints = HighScore();
 
-
+	// main loop
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
 
+
+		// parallax effect
 		BackgroundOffset -= BackgroundSpeed * GetFrameTime();
 
-		
-		if (BackgroundOffset <= -ScreenWidht)
+		if (BackgroundOffset <= -ScreenWidth)
 		{
 			BackgroundOffset = 0.f;
 		}
@@ -276,12 +277,12 @@ int main()
 		
 		DrawTexturePro(Background,
 			{ 0, 0, (float)Background.width, (float)Background.height },
-			{ BackgroundOffset, 0, (float)ScreenWidht, (float)ScreenHeight },
+			{ BackgroundOffset, 0, (float)ScreenWidth, (float)ScreenHeight },
 			{ 0, 0 }, 0, WHITE);
 
 		DrawTexturePro(Background,
 			{ 0, 0, (float)Background.width, (float)Background.height },
-			{ BackgroundOffset + ScreenWidht, 0, (float)ScreenWidht, (float)ScreenHeight },
+			{ BackgroundOffset + ScreenWidth, 0, (float)ScreenWidth, (float)ScreenHeight },
 			{ 0, 0 }, 0, WHITE);
 
 		SpawnPipes();
